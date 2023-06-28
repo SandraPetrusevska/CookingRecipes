@@ -1,0 +1,137 @@
+﻿@model CookingRecipes.Models.Chef
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4 style="text-align:center;">Chef</h4>
+<hr />
+
+<div class="card">
+    <div class="card-body text-center">
+        <h5 class="card-title">@Html.DisplayFor(model => model.FullName)</h5>
+        <p class="card-text">Date of birth: @Html.DisplayFor(model => model.BirthDate)</p>
+        <p class="card-text">Nationality: @Html.DisplayFor(model => model.Nationality)</p>
+        <p class="card-text">Gender: @Html.DisplayFor(model => model.Gender)</p>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success">Edit</a>
+        }
+        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    </div>
+</div>
+<br />
+<h5 style="text-align:center;">Recipes</h5>
+<hr />
+@{
+    var recipes = Model.Recipes.ToList(); 
+}
+
+<div class="container bcontent">
+    <div class="row">
+        @for (int i = 0; i < Model.Recipes.Count; i += 2)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card" style="width: 550px;">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            @if (!string.IsNullOrWhiteSpace(recipes[i].Image))
+                            {
+                                <img src="@Url.Content(recipes[i].Image)" alt="Image" class="card-img" style="width: 200px">
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    @Html.DisplayFor(modelItem => recipes[i].Title)
+                                </h5>
+                                <p class="card-text">
+                                    @Html.DisplayFor(modelItem => recipes[i].Description)
+                                </p>
+                                <p class="card-text">
+                                    @if (recipes[i].Reviews.Any())
+                                    {
+                                        double? averageRating = recipes[i].Reviews.Average(r => r.Rating);
+                                        decimal roundedRating = Convert.ToDecimal(averageRating.GetValueOrDefault());
+                                        decimal rounded = Math.Round(roundedRating, 2);
+                                        <small class="text-muted">
+                                            <b>Average Rating</b> @rounded
+                                        </small>
+                                    }
+                                    <br />
+                                    @if (recipes[i].Time.HasValue)
+                                    {
+                                        <small class="text-muted">
+                                            <b>Cook in </b> @Html.DisplayFor(modelItem => recipes[i].Time) minutes
+                                        </small>
+                                    }
+                                    <br />
+                                    @if (recipes[i].Time.HasValue)
+                                    {
+                                        <small class="text-muted">
+                                            <b>Serves </b>@Html.DisplayFor(modelItem => recipes[i].Serves)
+                                        </small>
+                                    }
+                                </p>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (i + 1 < Model.Recipes.Count)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card" style="width: 550px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                @if (!string.IsNullOrWhiteSpace(recipes[i + 1].Image))
+                                {
+                                    <img src="@Url.Content(recipes[i + 1].Image)" alt="Image" class="card-img" style="width: 200px">
+                                }
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        @Html.DisplayFor(modelItem => recipes[i + 1].Title)
+                                    </h5>
+                                    <p class="card-text">
+                                        @Html.DisplayFor(modelItem => recipes[i + 1].Description)
+                                    </p>
+                                    <p class="card-text">
+                                        @if (recipes[i+1].Reviews.Any())
+                                        {
+                                            double? averageRating = recipes[i+1].Reviews.Average(r => r.Rating);
+                                            decimal roundedRating = Convert.ToDecimal(averageRating.GetValueOrDefault());
+                                            decimal rounded = Math.Round(roundedRating, 2);
+                                            <small class="text-muted">
+                                                <b>Average Rating</b> @rounded
+                                            </small>
+                                        }
+                                        <br />
+                                        @if (recipes[i+1].Time.HasValue)
+                                        {
+                                            <small class="text-muted">
+                                                <b>Cook in </b> @Html.DisplayFor(modelItem => recipes[i+1].Time) minutes
+                                            </small>
+                                        }
+                                        <br />
+                                        @if (recipes[i+1].Time.HasValue)
+                                        {
+                                            <small class="text-muted">
+                                                <b>Serves </b>@Html.DisplayFor(modelItem => recipes[i+1].Serves)
+                                            </small>
+                                        }
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+

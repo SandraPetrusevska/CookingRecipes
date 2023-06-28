@@ -1,0 +1,121 @@
+﻿@model IEnumerable<CookingRecipes.Models.Review>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .rating {
+        unicode-bidi: bidi-override;
+        direction: ltr; /* Промена: поставете го смерот на текстот на "ltr" */
+        text-align: center;
+    }
+
+    .star {
+        display: inline-block;
+        color: #ccc;
+    }
+
+        .star:before {
+            content: "\2605";
+            color: yellow;
+            font-size: 32px;
+        }
+
+        .star.empty:before {
+            color: #ccc;
+        }
+</style>
+
+<script>
+    window.onload = function () {
+        var stars = document.querySelectorAll(".star");
+        stars.forEach(function (star) {
+            var rating = parseInt(star.dataset.rating);
+            if (rating === undefined) return;
+            if (rating > index) {
+                star.classList.add("empty");
+            }
+        });
+    }
+</script>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+@{
+    var reviews = Model.ToList();
+    for (int i = 0; i < reviews.Count; i += 2)
+    {
+        var review1 = reviews[i];
+        var review2 = (i + 1 < reviews.Count) ? reviews[i + 1] : null;
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => review1.Recipe.Title)</h5>
+                        <p class="card-text"><i>@Html.DisplayFor(modelItem => review1.AppUser):</i></p>
+                        <p class="card-text"> @Html.DisplayFor(modelItem => review1.Comment)</p>
+                        <p class="rating">
+                            @if (review1.Rating == null)
+                            {
+                                for (int j = 1; j <= 5; j++)
+                                {
+                                    <span class="star empty"></span>
+                                }
+                            }
+                            else
+                            {
+                                for (int j = 1; j <= 5; j++)
+                                {
+                                    <span class="star @((j > review1.Rating) ? "empty" : "")"></span>
+                                }
+                            }
+                        </p>
+
+                        <a asp-action="Edit" asp-route-id="@review1.Id" class="btn btn-success">Edit</a>
+
+                        <a asp-action="Details" asp-route-id="@review1.Id" class="btn btn-primary">Details</a>
+
+                        <a asp-action="Delete" asp-route-id="@review1.Id" class="btn btn-danger">Delete</a>
+
+                    </div>
+                </div>
+            </div>
+            @if (review2 != null)
+            {
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => review2.Recipe.Title)</h5>
+                            <p class="card-text"><i>@Html.DisplayFor(modelItem => review2.AppUser):</i></p>
+                            <p class="card-text"> @Html.DisplayFor(modelItem => review2.Comment)</p>
+                            <p class="rating">
+                                @if (review2.Rating == null)
+                                {
+                                    for (int j = 1; j <= 5; j++)
+                                    {
+                                        <span class="star empty"></span>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int j = 1; j <= 5; j++)
+                                    {
+                                        <span class="star @((j > review2.Rating) ? "empty" : "")"></span>
+                                    }
+                                }
+                            </p>
+                            <a asp-action="Edit" asp-route-id="@review2.Id" class="btn btn-success">Edit</a>
+                            <a asp-action="Details" asp-route-id="@review2.Id" class="btn btn-primary">Details</a>
+                            <a asp-action="Delete" asp-route-id="@review2.Id" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <br>
+        <br>
+    }
+}

@@ -1,0 +1,118 @@
+﻿@model IEnumerable<CookingRecipes.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    select {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #555;
+    }
+        select::-ms-expand,
+        select::-ms-select {
+            display: none; 
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #FFDAB9;
+            box-shadow: 0 0 5px #FFDAB9;
+        }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #FFDAB9;
+        box-shadow: 0 0 5px #FFDAB9;
+    }
+</style>
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+
+<form asp-controller="Recipes" asp-action="Index" method="get">
+    <p>
+        <select name="SearchCategory" id="SearchCategory" asp-items="@ViewBag.Categories">
+            <option value="">All</option>
+        </select>
+        <i>Title:</i> <input type="text" id="SearchTitle" name="SearchTitle" style="border-radius:4px; cursor:pointer; border:1px solid #ccc;" />
+        <input type="submit" value="Filter" style="background-image:linear-gradient(to right,#ffffff, #FFDAB9);border-radius:4px; border:1px solid #ccc;"  />
+    </p>
+</form>
+
+<div class="card-deck">
+    @for (int i = 0; i < Model.Count(); i += 3)
+    {
+        <div class="row">
+            @for (int j = i; j < i + 3 && j < Model.Count(); j++)
+            {
+                <div class="col-md-4">
+                    <div class="card card-sm">
+                        @if (!string.IsNullOrWhiteSpace(Model.ElementAt(j).Image))
+                        {
+                            <img class="card-img-top" src="@Url.Content(Model.ElementAt(j).Image)" alt="Image" style="width: 100%;">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                @Html.DisplayFor(modelItem => Model.ElementAt(j).Title)
+                            </h5>
+                            <p class="card-text" style="text-align: justify;">
+                                @Html.DisplayFor(modelItem => Model.ElementAt(j).Description)
+                            </p>
+                            <p class="card-text">
+                                @if (Model.ElementAt(j).Chef.FullName.Any())
+                                {
+                                    <small class="text-muted">
+                                        <b>Chef </b> @Html.DisplayFor(modelItem => Model.ElementAt(j).Chef.FullName)
+                                    </small>
+                                    <br />
+                                }
+                                @if (Model.ElementAt(j).Reviews.Any())
+                                {
+                                    double? averageRating = Model.ElementAt(j).Reviews.Average(r => r.Rating);
+                                    decimal roundedRating = Convert.ToDecimal(averageRating.GetValueOrDefault());
+                                    decimal rounded = Math.Round(roundedRating, 2);
+                                    <small class="text-muted">
+                                        <b>Average Rating</b> @rounded
+                                    </small>
+                                    <br />
+                                }
+                                @if (Model.ElementAt(j).Time.HasValue)
+                                {
+                                    <small class="text-muted">
+                                        <b>Cook in </b> @Html.DisplayFor(modelItem => Model.ElementAt(j).Time) minutes
+                                    </small>
+                                    <br />
+                                }
+                                @if (Model.ElementAt(j).Time.HasValue)
+                                {
+                                    <small class="text-muted">
+                                        <b>Serves </b>@Html.DisplayFor(modelItem => Model.ElementAt(j).Serves)
+                                    </small>
+                                }
+                            </p>
+                            <p style="text-align: center;">
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@Model.ElementAt(j).Id" class="btn btn-success">Edit</a>
+                                }
+                                <a asp-action="Details" asp-route-id="@Model.ElementAt(j).Id" class="btn btn-primary">Details</a>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@Model.ElementAt(j).Id" class="btn btn-danger">Delete</a>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+

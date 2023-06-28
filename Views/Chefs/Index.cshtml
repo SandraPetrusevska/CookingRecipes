@@ -1,0 +1,74 @@
+﻿@model IEnumerable<CookingRecipes.Models.Chef>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+<form asp-controller="Chefs" asp-action="Index" method="get">
+    <p>
+        <i>First Name:</i> <input type="text" id="SearchFirstName" name="SearchFirstName" value="" style="border-radius:4px; cursor:pointer; border:1px solid #ccc;"  />
+        <i>Last Name:</i> <input type="text" id="SearchLastName" name="SearchLastName" value="" style="border-radius:4px; cursor:pointer; border:1px solid #ccc;" />
+        <i>Nationality:</i> <input type="text" id="SearchNationality" name="SearchNationality" value="" style="border-radius:4px; cursor:pointer; border:1px solid #ccc;"  />
+        <input type="submit" value="Filter" style="background-image:linear-gradient(to right,#ffffff, #FFDAB9);border-radius:4px; border:1px solid #ccc;" />
+    </p>
+</form>
+
+@{
+    var chefs = Model.ToList();
+    for (int i = 0; i < chefs.Count; i += 2)
+    {
+        var chef1 = chefs[i];
+        var chef2 = (i + 1 < chefs.Count) ? chefs[i + 1] : null;
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => chef1.FullName)</h5>
+                        <p class="card-text">Date of birth: @Html.DisplayFor(modelItem => chef1.BirthDate)</p>
+                        <p class="card-text">Nationality: @Html.DisplayFor(modelItem => chef1.Nationality)</p>
+                        <p class="card-text">Gender: @Html.DisplayFor(modelItem => chef1.Gender)</p>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@chef1.Id" class="btn btn-success">Edit</a>
+                        }
+                        <a asp-action="Details" asp-route-id="@chef1.Id" class="btn btn-primary">Details</a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@chef1.Id" class="btn btn-danger">Delete</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (chef2 != null)
+            {
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => chef2.FullName)</h5>
+                            <p class="card-text">Date of birth: @Html.DisplayFor(modelItem => chef2.BirthDate)</p>
+                            <p class="card-text">Nationality: @Html.DisplayFor(modelItem => chef2.Nationality)</p>
+                            <p class="card-text">Gender: @Html.DisplayFor(modelItem => chef2.Gender)</p>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@chef2.Id" class="btn btn-success">Edit</a>
+                            }
+                            <a asp-action="Details" asp-route-id="@chef2.Id" class="btn btn-primary">Details</a>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@chef2.Id" class="btn btn-danger">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <br>
+        <br>
+    }
+}

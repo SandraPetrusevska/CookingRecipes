@@ -1,0 +1,23 @@
+﻿@model CookingRecipes.Models.Category
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4 style="text-align:center;">Category</h4>
+<hr />
+
+
+<div class="card">
+    <div class="card-body text-center">
+        <h5 class="card-title">
+            @Html.DisplayFor(model => model.CategoryName)
+        </h5>
+
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success">Edit</a>
+        }
+        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    </div>
+</div>

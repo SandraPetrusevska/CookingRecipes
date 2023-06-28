@@ -1,0 +1,70 @@
+﻿@model CookingRecipes.Models.Recipe
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4 style="text-align:center;">Recipe</h4>
+    <hr />
+    <div class="card card-sm" style="width: 550px; margin: 0 auto;">
+        @if (!string.IsNullOrWhiteSpace(Model.Image))
+        {
+            <img class="card-img-top" src="@Url.Content(Model.Image)" alt="Image" style="width: 100%;">
+        }
+        <div class="card-body">
+            <h5 class="card-title">
+                @Html.DisplayFor(modelItem => Model.Title)
+            </h5>
+            <p class="card-text" style="text-align: justify;">
+                @Html.DisplayFor(modelItem => Model.Description)
+                <br /> <br />
+                <strong>Ingredients:</strong>
+                @if (!string.IsNullOrWhiteSpace(Model.Ingredients))
+                {
+                    var ingredients = Model.Ingredients.Split(';');
+                    foreach (var ingredient in ingredients)
+                    {
+                        <div>@ingredient</div>
+                    }
+                }
+                <br />
+                @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || ((User.IsInRole("User") && ViewBag.MyRecipes == true))))
+                {
+                    <strong>Method:</strong> <br />
+                    <a href="@Model.DownloadUrl">Download the Method</a>
+                }
+            </p>
+            <p class="card-text">
+                @if (Model.Chef.FullName.Any())
+                {
+                    <small class="text-muted">
+                        <b>Chef </b> @Html.DisplayFor(modelItem => Model.Chef.FullName)
+                    </small>
+                    <br />
+                }
+                @if (Model.Time.HasValue)
+                {
+                    <small class="text-muted">
+                        <b>Cook in </b> @Html.DisplayFor(modelItem => Model.Time) minutes
+                    </small>
+                    <br />
+                }
+                @if (Model.Time.HasValue)
+                {
+                    <small class="text-muted">
+                        <b>Serves </b>@Html.DisplayFor(modelItem => Model.Serves)
+                    </small>
+                }
+            </p>
+            <form asp-action="Delete" >
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Delete" class="btn btn-danger" />
+                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

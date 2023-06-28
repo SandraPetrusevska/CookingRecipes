@@ -1,0 +1,158 @@
+﻿@model CookingRecipes.Models.Recipe
+
+@{
+    ViewData["Title"] = "Details";
+}
+<style>
+    .rating {
+        unicode-bidi: bidi-override;
+        direction: ltr; 
+        text-align: center;
+    }
+
+    .star {
+        display: inline-block;
+        color: #ccc;
+    }
+
+        .star:before {
+            content: "\2605";
+            color: yellow;
+            font-size: 32px;
+        }
+
+        .star.empty:before {
+            color: #ccc;
+        }
+
+    .gradient-bg {
+        background: linear-gradient(to right,#ffffff, #FFDAB9);
+    }
+</style>
+
+<script>
+    window.onload = function () {
+        var stars = document.querySelectorAll(".star");
+        stars.forEach(function (star) {
+            var rating = parseInt(star.dataset.rating);
+            if (rating === undefined) return;
+            if (rating > index) {
+                star.classList.add("empty");
+            }
+        });
+    }
+</script>
+
+<div>
+    <h4 style="text-align: center;">Recipe</h4>
+    <hr />
+</div>
+
+<div class="card card-sm" style="width: 1100px; margin: 0 auto;">
+    <div class="row">
+        <div class="col-md-6">
+            @if (!string.IsNullOrWhiteSpace(Model.Image))
+            {
+                <img class="card-img-top" src="@Url.Content(Model.Image)" alt="Image" style="width: 100%; height: 100%;">
+            }
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <h5 class="card-title">
+                    @Html.DisplayFor(modelItem => Model.Title)
+                </h5>
+                <p class="card-text" style="text-align: justify;">
+                    @Html.DisplayFor(modelItem => Model.Description)
+                    <br /><br />
+                    <strong>Ingredients:</strong>
+                    @if (!string.IsNullOrWhiteSpace(Model.Ingredients))
+                    {
+                        var ingredients = Model.Ingredients.Split(';');
+                        foreach (var ingredient in ingredients)
+                        {
+                            <div>@ingredient</div>
+                        }
+                    }
+                    <br />
+                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || ((User.IsInRole("User") && ViewBag.MyRecipes == true))))
+                    {
+                        <strong>Method:</strong> <br />
+                        <a href="@Model.DownloadUrl">Download the Method</a>
+                    }
+                </p>
+                <p class="card-text">
+                    @if (Model.Chef.FullName.Any())
+                    {
+                        <small class="text-muted">
+                            <b>Chef </b> @Html.DisplayFor(modelItem => Model.Chef.FullName)
+                        </small>
+                        <br />
+                    }
+                    @if (Model.Time.HasValue)
+                    {
+                        <small class="text-muted">
+                            <b>Cook in </b> @Html.DisplayFor(modelItem => Model.Time) minutes
+                        </small>
+                        <br />
+                    }
+                    @if (Model.Time.HasValue)
+                    {
+                        <small class="text-muted">
+                            <b>Serves </b>@Html.DisplayFor(modelItem => Model.Serves)
+                        </small>
+                    }
+                </p>
+                <p style="text-align: center;">
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success">Edit</a>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("User") && (ViewBag.MyRecipes == false))
+                    {
+                        <a asp-action="Add" asp-route-id="@Model?.Id" class="btn btn-primary">Add to my recipes</a>
+                    }
+                    <a asp-action="Index" class="btn btn-info text-white">Back to List</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<br />
+<h5 style="text-align:center;">Recipe reviews</h5>
+<hr />
+
+@foreach (var el in Model.Reviews)
+{
+    <div class="card text-center">
+        <div class="card-header gradient-bg">
+            <p ><strong><i>@Html.DisplayFor(modelItem => el.AppUser):</i></strong></p>
+        </div>
+        <div class="card-body">
+            <div class="card-text">
+                <p>@Html.DisplayFor(modelItem => el.Comment)</p>
+            </div>
+
+            <div class="rating">
+                @if (el.Rating == null)
+                {
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="star empty"></span>
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="star @((i > el.Rating) ? "empty" : "")"></span>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+
+

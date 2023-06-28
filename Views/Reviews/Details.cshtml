@@ -1,0 +1,34 @@
+﻿@model CookingRecipes.Models.Review
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4 style="text-align:center;">Review</h4>
+<hr />
+
+<div class="card">
+    <div class="card-body text-center">
+        <h5 class="card-title">@Html.DisplayFor(model => model.Recipe.Title)</h5>
+        <p class="card-text"> <i>@Html.DisplayFor(model => model.AppUser):</i></p>
+        <p class="card-text"> @Html.DisplayFor(model => model.Comment)</p>
+        <div class="card-text">
+            @if (Model?.Rating == null)
+                {
+                <p>No Rating.</p>
+            }
+            else
+            {
+            <p>Rating: @Html.DisplayFor(model => model.Rating) </p>
+            }
+        </div>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success">Edit</a>
+        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+
+    </div>
+</div>
+<br>
+<br>
+    
+
+
