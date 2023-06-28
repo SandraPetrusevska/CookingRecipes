@@ -4,13 +4,39 @@
     ViewData["Title"] = "MyRecipes";
 }
 
+<style>
+    select {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #555;
+    }
+
+        select::-ms-expand,
+        select::-ms-select {
+            display: none;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #FFDAB9;
+            box-shadow: 0 0 5px #FFDAB9;
+        }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #FFDAB9;
+        box-shadow: 0 0 5px #FFDAB9;
+    }
+</style>
+
 <form asp-controller="Recipes" asp-action="MyRecipes" method="get">
     <p>
         <select name="SearchCategory" id="SearchCategory" asp-items="@ViewBag.Categories">
             <option value="">All</option>
         </select>
-        Title: <input type="text" id="SearchTitle" name="SearchTitle" />
-        <input type="submit" value="Filter" />
+        Title: <input type="text" id="SearchTitle" name="SearchTitle" style="border-radius:4px; cursor:pointer; border:1px solid #ccc;"  />
+        <input type="submit" value="Filter" style="background-image:linear-gradient(to right,#ffffff, #FFDAB9);border-radius:4px; border:1px solid #ccc;" />
     </p>
 </form>
 
